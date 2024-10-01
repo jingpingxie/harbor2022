@@ -2,8 +2,6 @@ Logs
 UserSettings
 Layouts
 .vs
-*.meta
-*.mat
 obj
 /Library/APIUpdater
 /Library/Artifacts
