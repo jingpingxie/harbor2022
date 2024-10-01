@@ -119,18 +119,18 @@
     <Compile Include="Assets\RoadArchitect\Scripts\EdgeObjectMaker.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\RoadArchitect\Shaders\RoadShaderLowDX11.shader" />
     <None Include="Assets\RoadArchitect\Shaders\ShoulderDirtDX11.shader" />
-    <None Include="Assets\RoadArchitect\Shaders\TransparentWithShadows.shader" />
-    <None Include="Assets\RoadArchitect\Shaders\StandardOffset.shader" />
-    <None Include="Assets\RoadArchitect\Shaders\RoadShaderLow.shader" />
-    <None Include="Assets\RoadArchitect\Editor\Library\W\W.txt" />
     <None Include="Assets\RoadArchitect\Shaders\StandardTiling.shader" />
     <None Include="Assets\RoadArchitect\Shaders\ShoulderDirt.shader" />
-    <None Include="Assets\RoadArchitect\Shaders\RoadShader.shader" />
+    <None Include="Assets\RoadArchitect\Shaders\StandardOffset.shader" />
+    <None Include="Assets\RoadArchitect\Shaders\RoadShaderDX11.shader" />
+    <None Include="Assets\RoadArchitect\Shaders\RoadShaderLowDX11.shader" />
+    <None Include="Assets\RoadArchitect\Shaders\TransparentWithShadows.shader" />
+    <None Include="Assets\RoadArchitect\Editor\Library\W\W.txt" />
+    <None Include="Assets\RoadArchitect\Shaders\RoadShaderLow.shader" />
     <None Include="Assets\RoadArchitect\RoadArchitect.asmdef" />
     <None Include="Assets\RoadArchitect\Shaders\TransparentWithShadowsZ.shader" />
-    <None Include="Assets\RoadArchitect\Shaders\RoadShaderDX11.shader" />
+    <None Include="Assets\RoadArchitect\Shaders\RoadShader.shader" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
