@@ -17,6 +17,7 @@ namespace Assets.Scripts.Dijkstra
             try
             {
                 graph.Init();
+                Plan("10_4", "10_5");
             }
             catch (Exception ex)
             {

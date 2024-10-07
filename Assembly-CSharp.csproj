@@ -61,7 +61,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Dijkstra\Utils.cs" />
-    <Compile Include="Assets\Scripts\ChainController.cs" />
     <Compile Include="Assets\Scripts\Dijkstra\Graph.cs" />
     <Compile Include="Assets\Scripts\Dijkstra\Node.cs" />
     <Compile Include="Assets\Scripts\Dijkstra\PassedPath.cs" />
@@ -70,14 +69,18 @@
     <Compile Include="Assets\Scripts\CraneActionState.cs" />
     <Compile Include="Assets\Scripts\PortTruckController.cs" />
     <Compile Include="Assets\Scripts\TestMysql.cs" />
+    <Compile Include="Assets\Scripts\Container\ContainerType.cs" />
     <Compile Include="Assets\Scripts\CraneController.cs" />
     <Compile Include="Assets\Scripts\Dijkstra\RoutePlanResult.cs" />
     <Compile Include="Assets\Scripts\GameObjectUtils.cs" />
     <Compile Include="Assets\Scripts\ShipController.cs" />
+    <Compile Include="Assets\Scripts\Ship\ShipPlan.cs" />
     <Compile Include="Assets\Scripts\Dijkstra\Edge.cs" />
+    <Compile Include="Assets\Scripts\Container\Container.cs" />
     <Compile Include="Assets\Scripts\Dijkstra\Coord.cs" />
     <Compile Include="Assets\Scripts\CameraController.cs" />
     <Compile Include="Assets\Scripts\Dijkstra\PlanCourse.cs" />
+    <Compile Include="Assets\Scripts\Container\ContainerFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Scripts\Dijkstra\Readme.txt" />

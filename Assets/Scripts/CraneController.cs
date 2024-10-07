@@ -28,7 +28,7 @@ public class CraneController : MonoBehaviour
         hook = GameObject.Find("Hook");
         container = GameObject.Find("Port-Container_SHIP1/Port-container_38");
         containerOriginTransform = container.transform;
-        truck = GameObject.Find("Port-Truck");
+        truck = GameObject.Find("HG0701");
         truckTransform = truck.transform;
 
         System.Console.WriteLine("start");
