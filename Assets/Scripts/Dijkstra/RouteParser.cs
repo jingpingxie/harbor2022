@@ -17,7 +17,7 @@ namespace Assets.Scripts.Dijkstra
             try
             {
                 graph.Init();
-                Plan("10_4", "10_5");
+                Plan("3_1", "1_1");
             }
             catch (Exception ex)
             {
@@ -27,7 +27,7 @@ namespace Assets.Scripts.Dijkstra
 
         public String[] Plan(String startId, String destId)
         {
-            RoutePlanResult routePlanResult = planner.Plan(graph.NodeList, startId, destId);
+            RoutePlanResult routePlanResult = planner.Plan(graph.NodeList, startId, destId,"2_1");
             String[] resultNodes = routePlanResult.ResultNodes;
             Debug.Log(resultNodes);
             return resultNodes;
