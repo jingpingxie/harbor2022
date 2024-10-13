@@ -8,6 +8,7 @@ namespace Assets.Scripts.Dijkstra
 {
     public class Utils
     {
+        // 计算两点之间的距离
         static public double getDistance(Coord c1, Coord c2) {
             double dx = c2.X - c1.X;
             double dy = c2.Z - c1.Z;

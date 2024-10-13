@@ -24,14 +24,17 @@ namespace Assets.Scripts.Dijkstra
         /// <param name="nodeList">所有的道路节点</param>
         /// <param name="originID">起始节点</param>
         /// <param name="destID">目标节点</param>
-        /// <param name="ignoreNodeID">忽略走此节点，以免道路中间掉头，浪费时间</param>
+        /// <param name="ignoreNodeID">忽略走此节点，避免在道路中间掉头，浪费时间</param>
         /// <returns></returns>
         public RoutePlanResult Plan(List<Node> nodeList, string originID, string destID, string ignoreNodeID)
         {
             //初始化起始节点到其他节点的路径表(权值，经过的节点，是否被处理）
             //同时初始化其他节点的路径表
             PlanCourse planCourse = new PlanCourse(nodeList, originID);
-            planCourse[ignoreNodeID].BeProcessed = true;
+            if (!string.IsNullOrEmpty(ignoreNodeID))
+            {
+                planCourse[ignoreNodeID].BeProcessed = true;
+            }
 
             Node curNode = this.GetMinWeightRudeNode(planCourse, nodeList, originID);
 

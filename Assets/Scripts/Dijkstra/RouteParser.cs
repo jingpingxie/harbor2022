@@ -26,8 +26,8 @@ namespace Assets.Scripts.Dijkstra
         }
 
         public String[] Plan(String startId, String destId)
-        {
-            RoutePlanResult routePlanResult = planner.Plan(graph.NodeList, startId, destId,"2_1");
+        {            
+            RoutePlanResult routePlanResult = planner.Plan(graph.RouteNet.NodeList, startId, destId,"2_1");
             String[] resultNodes = routePlanResult.ResultNodes;
             Debug.Log(resultNodes);
             return resultNodes;
