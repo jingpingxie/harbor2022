@@ -8,7 +8,7 @@ using System;
 using UnityEngine.UIElements;
 
 //https://blog.csdn.net/qq_68117303/article/details/133011345
-
+//https://docs.unity3d.com/cn/current/Manual/class-WheelCollider.html
 public class CarEngine : MonoBehaviour
 {
     //汽车的最大转向角度
@@ -20,24 +20,25 @@ public class CarEngine : MonoBehaviour
     private int currentIndex = 0;
 
 
-    //车轮碰撞器
-    public WheelCollider LF;  //左前轮
-    public WheelCollider RF;  //右前轮
+    ////车轮碰撞器
+    //public WheelCollider LF;  //左前轮
+    //public WheelCollider RF;  //右前轮
 
-    //轮胎碰撞器
-    public WheelCollider LB; //左后
-    public WheelCollider RB; //右后
+    ////轮胎碰撞器
+    //public WheelCollider LB; //左后
+    //public WheelCollider RB; //右后
+    GameObject carHead;
 
     private float targetSteerAngle; //汽车轮胎实际的转角
 
     //车轮动力部分
     public float maxMotorTorque = 600f; //车轮最大动力   
     public float maxSpeed = 60f; //最大车速
-    public float currentSpeed;   //汽车当前车速
+    //public float currentSpeed;   //汽车当前车速
 
     //汽车稳定性的提升
     private Rigidbody rb;
-    public UnityEngine.Vector3 centerOfMass = new UnityEngine.Vector3(0,-1,0);
+    public UnityEngine.Vector3 centerOfMass = new UnityEngine.Vector3(0, -1, 0);
 
     //汽车动力
     public float maxBrakeTorque = 600f;  //刹车的制动力
@@ -104,33 +105,34 @@ public class CarEngine : MonoBehaviour
         UnityEngine.Vector3 relativeVector = transform.InverseTransformPoint(nodes[currentIndex].position);
         //计算轮胎的实际转角
         float newSteer = (relativeVector.x / relativeVector.magnitude) * maxSteerAngle;
-        targetSteerAngle = newSteer;
-        //将实际转角运用到左前轮和右前轮的转角
-        LF.steerAngle = targetSteerAngle;
-        RF.steerAngle = targetSteerAngle;
+        this.targetSteerAngle = newSteer;
+        ////将实际转角运用到左前轮和右前轮的转角
+        //LF.steerAngle = targetSteerAngle;
+        //RF.steerAngle = targetSteerAngle;
+        this.carHead.transform.Rotate(UnityEngine.Vector3.down * Time.deltaTime * targetSteerAngle);
     }
 
     private void Drive()
     {
-        //计算车速
-        currentSpeed = 2 * Mathf.PI * LF.radius * LF.rpm * 60 / 1000;
-        //如果车速小于最大速度，那么给予车轮动力
-        //修改一下汽车行驶的条件
-        if (currentSpeed < maxSpeed && !isBraking)
-        {
-            LF.motorTorque = maxMotorTorque;
-            RF.motorTorque = maxMotorTorque;
-        }
-        else
-        {
-            LF.motorTorque = 0;
-            RF.motorTorque = 0;
-        }
+        ////计算车速
+        //currentSpeed = 2 * Mathf.PI * LF.radius * LF.rpm * 60 / 1000;
+        ////如果车速小于最大速度，那么给予车轮动力
+        ////修改一下汽车行驶的条件
+        //if (currentSpeed < maxSpeed && !isBraking)
+        //{
+        //    LF.motorTorque = maxMotorTorque;
+        //    RF.motorTorque = maxMotorTorque;
+        //}
+        //else
+        //{
+        //    LF.motorTorque = 0;
+        //    RF.motorTorque = 0;
+        //}
     }
     private void CheckNextWaypointDistance()
     {
         //判断汽车当前的距离和路径点之间的距离
-        if(UnityEngine.Vector3.Distance(new UnityEngine.Vector3(transform.position.x, 0, transform.position.z),
+        if (UnityEngine.Vector3.Distance(new UnityEngine.Vector3(transform.position.x, 0, transform.position.z),
                            new UnityEngine.Vector3(nodes[currentIndex].position.x, 0,
                            nodes[currentIndex].position.z)) < 0.5f)
         {
@@ -148,19 +150,19 @@ public class CarEngine : MonoBehaviour
 
     private void Breaking()
     {
-        if (isBraking)
-        {
-            carRender.material.mainTexture = textureBreaking;
-            //后轮刹车
-            RB.brakeTorque = maxBrakeTorque;
-            LB.brakeTorque = maxBrakeTorque;
-        }
-        else
-        {
-            carRender.material.mainTexture = textureNormal;
-            RB.brakeTorque = 0;
-            LB.brakeTorque = 0;
-        }
+        //if (isBraking)
+        //{
+        //    carRender.material.mainTexture = textureBreaking;
+        //    //后轮刹车
+        //    RB.brakeTorque = maxBrakeTorque;
+        //    LB.brakeTorque = maxBrakeTorque;
+        //}
+        //else
+        //{
+        //    carRender.material.mainTexture = textureNormal;
+        //    RB.brakeTorque = 0;
+        //    LB.brakeTorque = 0;
+        //}
     }
 
     // Update is called once per frame
