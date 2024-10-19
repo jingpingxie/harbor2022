@@ -6,6 +6,7 @@ using System.Numerics;
 using UnityEngine;
 using System;
 using UnityEngine.UIElements;
+using UnityEngine.AI;
 
 //https://blog.csdn.net/qq_68117303/article/details/133011345
 //https://docs.unity3d.com/cn/current/Manual/class-WheelCollider.html
@@ -51,6 +52,8 @@ public class CarEngine : MonoBehaviour
 
     RouteNet routeNet;
 
+    private NavMeshAgent nav;
+
 
     public String[] Plan(Coord startPosition, Coord endPosition)
     {
@@ -65,6 +68,9 @@ public class CarEngine : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //获取当前车辆的NavMeshAgent
+        nav = this.transform.GetComponent<NavMeshAgent>();
+
         //获取要装卸的集装箱
         GameObject container = GameObject.Find("Port-Container_SHIP1/Port-container_38");
         //集装箱位置
@@ -73,7 +79,7 @@ public class CarEngine : MonoBehaviour
         GameObject truck = GameObject.Find("HG0702");
         Transform truckPos = truck.transform;
 
-        String[] resultNodes = HarborApp.Plan(new Coord(truckPos.position.x, truckPos.position.y, truckPos.position.z), new Coord(containerPos.position.x, containerPos.position.y, containerPos.position.z));
+        String[] resultNodes = this.Plan(new Coord(truckPos.position.x, truckPos.position.y, truckPos.position.z), new Coord(containerPos.position.x, containerPos.position.y, containerPos.position.z));
         //routeNet.m_nodeList.Clear();
         Debug.Log(resultNodes);
 
@@ -146,6 +152,7 @@ public class CarEngine : MonoBehaviour
                 currentIndex++;
             }
         }
+        nav.SetDestination(this.nodes[currentIndex].position);
     }
 
     private void Breaking()

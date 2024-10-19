@@ -23,9 +23,12 @@ namespace Assets.Scripts.Dijkstra
             m_nodeMap = new Dictionary<string, Node>();
             foreach (Node node in other.m_nodeList)
             {
-                Node newNode = node.Clone();
-                this.m_nodeList.Add(newNode);
-                m_nodeMap.Add(newNode.ID, newNode);
+                if (!m_nodeMap.TryGetValue(node.ID, out Node value))
+                {
+                    Node newNode = node.Clone();
+                    this.m_nodeList.Add(newNode);
+                    m_nodeMap[newNode.ID] = newNode;
+                }
             }
 
             foreach (Edge edge in other.m_edgeList)
