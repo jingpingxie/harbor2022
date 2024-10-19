@@ -55,7 +55,7 @@ namespace Assets.Scripts.Dijkstra
             else
             {
                 //垂足在线段上
-                foot = new Coord(startCoord.X + r * (endCoord.X - startCoord.X), 0, startCoord.Z + r * (endCoord.Z - startCoord.Z));
+                foot = new Coord((float)(startCoord.X + r * (endCoord.X - startCoord.X)), 0, (float)(startCoord.Z + r * (endCoord.Z - startCoord.Z)));
                 return Utils.getDistance(coord, foot);
             }
         }

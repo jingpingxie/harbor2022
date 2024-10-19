@@ -71,17 +71,17 @@ namespace Assets.Scripts.Dijkstra
                     {
                         //将坐标加入map列表，并且去重
                         Coord coord = new Coord(
-                            Double.Parse(coordArray[j][1].ToString()),
-                            Double.Parse(coordArray[j][2].ToString()),
-                            Double.Parse(coordArray[j][3].ToString()));
+                            float.Parse(coordArray[j][1].ToString()),
+                            float.Parse(coordArray[j][2].ToString()),
+                            float.Parse(coordArray[j][3].ToString()));
                         String currentNodeId = coordArray[j][0].ToString();
                         Node node = new Node(currentNodeId, coord);
                         if (j < coordArray.Count - 1)
                         {
                             //顺时针edge,不是终点，加入下一边
-                            Coord nextCoord = new Coord(Double.Parse(coordArray[j + 1][1].ToString()),
-                                Double.Parse(coordArray[j + 1][2].ToString()),
-                                Double.Parse(coordArray[j + 1][3].ToString()));
+                            Coord nextCoord = new Coord(float.Parse(coordArray[j + 1][1].ToString()),
+                                float.Parse(coordArray[j + 1][2].ToString()),
+                                float.Parse(coordArray[j + 1][3].ToString()));
                             double distance = Utils.getDistance(coord, nextCoord);
                             String nextNodeId = coordArray[j + 1][0].ToString();
                             Edge edge = new Edge();
@@ -96,9 +96,9 @@ namespace Assets.Scripts.Dijkstra
                         if (j > 0)
                         {
                             //逆时针edge,不是起点，加入上一边
-                            Coord lastCoord = new Coord(Double.Parse(coordArray[j - 1][1].ToString()),
-                                Double.Parse(coordArray[j - 1][2].ToString()),
-                                Double.Parse(coordArray[j - 1][3].ToString()));
+                            Coord lastCoord = new Coord(float.Parse(coordArray[j - 1][1].ToString()),
+                                float.Parse(coordArray[j - 1][2].ToString()),
+                                float.Parse(coordArray[j - 1][3].ToString()));
                             double distance = Utils.getDistance(coord, lastCoord);
                             String lastNodeId = coordArray[j - 1][0].ToString();
                             Edge edge = new Edge();

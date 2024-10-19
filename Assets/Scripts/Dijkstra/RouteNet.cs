@@ -57,7 +57,7 @@ namespace Assets.Scripts.Dijkstra
             m_nodeList.AddRange(nodeList);
         }
 
-        Node GetNodeById(string nodeId)
+        public Node GetNodeById(string nodeId)
         {
             this.m_nodeMap.TryGetValue(nodeId, out Node node);
             return node;

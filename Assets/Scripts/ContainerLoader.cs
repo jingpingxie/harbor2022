@@ -12,14 +12,10 @@ namespace Assets.Scripts
 {
     public class ContainerLoader : MonoBehaviour
     {
-        Assets.Scripts.Dijkstra.Graph graph = new Assets.Scripts.Dijkstra.Graph();
-        RoutePlanner planner = new RoutePlanner();
         void Start()
         {
             try
             {
-                graph.Init();
-                //Plan("3_1", "1_1");
                 dispatch();
             }
             catch (Exception ex)
@@ -39,11 +35,8 @@ namespace Assets.Scripts
             //获取集卡的位置
             GameObject truck = GameObject.Find("HG0702");
             Transform truckPos = truck.transform;
-            RouteNet routeNet = graph.RouteNet.Clone();
-            Node startNode = routeNet.InsertNearstNode("startNodeId", new Coord(truckPos.position.x, truckPos.position.y, truckPos.position.z));
-            Node endNode = routeNet.InsertNearstNode("endNodeId", new Coord(containerPos.position.x, containerPos.position.y, containerPos.position.z));
-            RoutePlanResult routePlanResult = planner.Plan(routeNet.NodeList, startNode.ID, endNode.ID, null);
-            String[] resultNodes = routePlanResult.ResultNodes;
+
+            String[] resultNodes = HarborApp.Plan(new Coord(truckPos.position.x, truckPos.position.y, truckPos.position.z), new Coord(containerPos.position.x, containerPos.position.y, containerPos.position.z));
             //routeNet.m_nodeList.Clear();
             Debug.Log(resultNodes);
         }

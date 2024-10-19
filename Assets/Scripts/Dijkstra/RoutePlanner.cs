@@ -94,12 +94,12 @@ namespace Assets.Scripts.Dijkstra
                 return result1;
             }
 
-            string[] passedNodeIDs = new string[pPath.PassedIDList.Count];
-            for (int i = 0; i < passedNodeIDs.Length; i++)
+            string[] passedNodeIDs = new string[pPath.PassedIDList.Count + 1];
+            for (int i = 0; i < pPath.PassedIDList.Count; i++)
             {
                 passedNodeIDs[i] = pPath.PassedIDList[i].ToString();
             }
-
+            passedNodeIDs[pPath.PassedIDList.Count] = destID;
             RoutePlanResult result = new RoutePlanResult(passedNodeIDs, pPath.Weight);
 
             return result;

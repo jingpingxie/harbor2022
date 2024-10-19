@@ -11,11 +11,11 @@ namespace Assets.Scripts.Dijkstra
 {
     public class Coord
     {
-        public double X;
-        public double Y;
-        public double Z;
+        public float X;
+        public float Y;
+        public float Z;
 
-        public Coord(double x, double y, double z)
+        public Coord(float x, float y, float z)
         {
             this.X = x;
             this.Y = y;
