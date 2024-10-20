@@ -75,11 +75,11 @@ public class CarEngine : MonoBehaviour
         GameObject container = GameObject.Find("Port-Container_SHIP1/Port-container_38");
         //集装箱位置
         Transform containerPos = container.transform;
-        //获取集卡的位置
-        GameObject truck = GameObject.Find("HG0702");
-        Transform truckPos = truck.transform;
+        ////获取集卡的位置
+        //GameObject truck = GameObject.Find("HG0701");
+        //Transform truckPos = truck.transform;
 
-        String[] resultNodes = this.Plan(new Coord(truckPos.position.x, truckPos.position.y, truckPos.position.z), new Coord(containerPos.position.x, containerPos.position.y, containerPos.position.z));
+        String[] resultNodes = this.Plan(new Coord(this.transform.position.x, this.transform.position.y, this.transform.position.z), new Coord(containerPos.position.x, containerPos.position.y, containerPos.position.z));
         //routeNet.m_nodeList.Clear();
         Debug.Log(resultNodes);
 
@@ -115,7 +115,7 @@ public class CarEngine : MonoBehaviour
         UnityEngine.Vector3 relativeVector = transform.InverseTransformPoint(nodes[currentIndex].position);
         //计算轮胎的实际转角
         float newSteer = (relativeVector.x / relativeVector.magnitude) * maxSteerAngle;
-        //this.targetSteerAngle = newSteer;
+        this.targetSteerAngle = newSteer;
         ////将实际转角运用到左前轮和右前轮的转角
         //LF.steerAngle = targetSteerAngle;
         //RF.steerAngle = targetSteerAngle;
@@ -148,7 +148,7 @@ public class CarEngine : MonoBehaviour
             //如果已经到达了最后一个路径点，那么将索引值置0，绕圈
             if (currentIndex == nodes.Count - 1)
             {
-                currentIndex = 0;
+                //currentIndex = 0;
             }
             else
             {
