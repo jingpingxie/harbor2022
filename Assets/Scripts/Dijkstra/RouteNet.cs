@@ -151,6 +151,7 @@ namespace Assets.Scripts.Dijkstra
             m_edgeList.Add(insertEdge2);
 
             m_nodeList.Add(insertNode);
+            m_nodeMap[nodeId] = insertNode;
             return insertNode;
         }
     }

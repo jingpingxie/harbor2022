@@ -140,15 +140,15 @@ public class CraneController : MonoBehaviour
     private void LiftMove()
     {
         Transform elevatorTransform = elevator.transform;
-        Vector3 targetPos = new Vector3(truckTransform.position.x, elevatorTransform.position.y, elevatorTransform.position.z);
+        Vector3 targetPos = new Vector3(Mathf.Min(truckTransform.position.x, 8), elevatorTransform.position.y, elevatorTransform.position.z);
         float step = moveSpeed * Time.deltaTime;
+
         elevatorTransform.position = Vector3.MoveTowards(elevatorTransform.position, targetPos, step);
 
         Transform containerTransform = containerOriginTransform;
         containerTransform.position = new Vector3(elevatorTransform.position.x, containerTransform.position.y, containerTransform.position.z);
 
-
-        if (Mathf.Abs(elevatorTransform.position.x - targetPos.x) < 0.1f)
+        if (Mathf.Abs(elevatorTransform.position.x - truckTransform.position.x) < 0.1f)
         {
             System.Console.WriteLine("lift down");
             moveState = CraneActionState.LiftDown;

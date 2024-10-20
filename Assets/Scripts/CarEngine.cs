@@ -90,14 +90,14 @@ public class CarEngine : MonoBehaviour
             Coord coord = routeNet.GetNodeById(resultNodes[i]).Coord;
             Transform newTransform = new GameObject().transform;
             newTransform.position = new UnityEngine.Vector3(coord.X, coord.Y, coord.Z);
-            nodes.Add(transform);
+            nodes.Add(newTransform);
         }
         rb = GetComponent<Rigidbody>();
         //改变车辆的重心,汽车稳定性的提升
         rb.centerOfMass = centerOfMass;
     }
 
-    private void FixUpdate()
+    private void FixedUpdate()
     {
         ApplySteer();
         Drive();
@@ -107,15 +107,19 @@ public class CarEngine : MonoBehaviour
 
     private void ApplySteer()
     {
+        if (nodes[currentIndex].position == transform.position)
+        {
+            return;
+        }
         //根据车的位置和路径点的位置坐标计算出相对向量
         UnityEngine.Vector3 relativeVector = transform.InverseTransformPoint(nodes[currentIndex].position);
         //计算轮胎的实际转角
         float newSteer = (relativeVector.x / relativeVector.magnitude) * maxSteerAngle;
-        this.targetSteerAngle = newSteer;
+        //this.targetSteerAngle = newSteer;
         ////将实际转角运用到左前轮和右前轮的转角
         //LF.steerAngle = targetSteerAngle;
         //RF.steerAngle = targetSteerAngle;
-        this.carHead.transform.Rotate(UnityEngine.Vector3.down * Time.deltaTime * targetSteerAngle);
+        //this.carHead.transform.Rotate(UnityEngine.Vector3.left * Time.deltaTime * targetSteerAngle);
     }
 
     private void Drive()
@@ -138,9 +142,8 @@ public class CarEngine : MonoBehaviour
     private void CheckNextWaypointDistance()
     {
         //判断汽车当前的距离和路径点之间的距离
-        if (UnityEngine.Vector3.Distance(new UnityEngine.Vector3(transform.position.x, 0, transform.position.z),
-                           new UnityEngine.Vector3(nodes[currentIndex].position.x, 0,
-                           nodes[currentIndex].position.z)) < 0.5f)
+        if (UnityEngine.Vector3.Distance(new UnityEngine.Vector3(this.transform.position.x, 0, this.transform.position.z),
+                           new UnityEngine.Vector3(nodes[currentIndex].position.x, 0, nodes[currentIndex].position.z)) < 0.5f)
         {
             //如果已经到达了最后一个路径点，那么将索引值置0，绕圈
             if (currentIndex == nodes.Count - 1)
@@ -175,6 +178,21 @@ public class CarEngine : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        ////判断汽车当前的距离和路径点之间的距离
+        //if (UnityEngine.Vector3.Distance(new UnityEngine.Vector3(transform.position.x, 0, transform.position.z),
+        //                   new UnityEngine.Vector3(nodes[currentIndex].position.x, 0,
+        //                   nodes[currentIndex].position.z)) < 0.5f)
+        //{
+        //    //如果已经到达了最后一个路径点，那么将索引值置0，绕圈
+        //    if (currentIndex == nodes.Count - 1)
+        //    {
+        //        currentIndex = 0;
+        //    }
+        //    else
+        //    {
+        //        currentIndex++;
+        //    }
+        //}
+        //nav.SetDestination(this.nodes[currentIndex].position);
     }
 }
