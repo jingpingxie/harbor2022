@@ -2,58 +2,32 @@ using Assets.Scripts;
 using Assets.Scripts.Dijkstra;
 using RoadArchitect;
 using System.Collections.Generic;
-using System.Numerics;
 using UnityEngine;
 using System;
 using UnityEngine.UIElements;
 using UnityEngine.AI;
+using TMPro;
+using UnityEngine.EventSystems;
 
 //https://blog.csdn.net/qq_68117303/article/details/133011345
 //https://docs.unity3d.com/cn/current/Manual/class-WheelCollider.html
 public class CarEngine : MonoBehaviour
 {
-    //汽车的最大转向角度
-    public float maxSteerAngle = 90;
 
     //获取路径
-    private List<Transform> nodes;
+    private List<UnityEngine.Vector3> nodes;
     //路径点索引值
     private int currentIndex = 0;
 
 
-    ////车轮碰撞器
-    //public WheelCollider LF;  //左前轮
-    //public WheelCollider RF;  //右前轮
-
-    ////轮胎碰撞器
-    //public WheelCollider LB; //左后
-    //public WheelCollider RB; //右后
-    GameObject carHead;
-
-    private float targetSteerAngle; //汽车轮胎实际的转角
-
-    //车轮动力部分
-    public float maxMotorTorque = 600f; //车轮最大动力   
-    public float maxSpeed = 60f; //最大车速
-    //public float currentSpeed;   //汽车当前车速
+    public float speed = 10;
 
     //汽车稳定性的提升
-    private Rigidbody rb;
+    //private Rigidbody rb;
     public UnityEngine.Vector3 centerOfMass = new UnityEngine.Vector3(0, -1, 0);
 
-    //汽车动力
-    public float maxBrakeTorque = 600f;  //刹车的制动力
-
-    //刹车部分的设置
-    public bool isBraking;
-    public Texture2D textureNormal;     //不刹车时车灯的贴图
-    public Texture2D textureBreaking;   //刹车时车灯的贴图
-    public Renderer carRender;
-
     RouteNet routeNet;
-
-    private NavMeshAgent nav;
-
+    UnityEngine.Vector3 _targetPosition;
 
     public String[] Plan(Coord startPosition, Coord endPosition)
     {
@@ -68,131 +42,87 @@ public class CarEngine : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //获取当前车辆的NavMeshAgent
-        nav = this.transform.GetComponent<NavMeshAgent>();
-
         //获取要装卸的集装箱
         GameObject container = GameObject.Find("Port-Container_SHIP1/Port-container_38");
         //集装箱位置
         Transform containerPos = container.transform;
-        ////获取集卡的位置
-        //GameObject truck = GameObject.Find("HG0701");
-        //Transform truckPos = truck.transform;
 
         String[] resultNodes = this.Plan(new Coord(this.transform.position.x, this.transform.position.y, this.transform.position.z), new Coord(containerPos.position.x, containerPos.position.y, containerPos.position.z));
-        //routeNet.m_nodeList.Clear();
         Debug.Log(resultNodes);
-
-        //Transform[] pathTransfroms = path.GetComponentsInChildren<Transform>();
-        nodes = new List<Transform>();
+        nodes = new List<UnityEngine.Vector3>();
         for (int i = 0; i < resultNodes.Length; i++)
         {
             Coord coord = routeNet.GetNodeById(resultNodes[i]).Coord;
-            Transform newTransform = new GameObject().transform;
-            newTransform.position = new UnityEngine.Vector3(coord.X, coord.Y, coord.Z);
-            nodes.Add(newTransform);
+            nodes.Add(new UnityEngine.Vector3(coord.X, 1.5f, coord.Z));
         }
-        rb = GetComponent<Rigidbody>();
-        //改变车辆的重心,汽车稳定性的提升
-        rb.centerOfMass = centerOfMass;
+        _targetPosition = nodes[0];
     }
 
-    private void FixedUpdate()
-    {
-        ApplySteer();
-        Drive();
-        CheckNextWaypointDistance();
-        Breaking();
-    }
 
-    private void ApplySteer()
-    {
-        if (nodes[currentIndex].position == transform.position)
-        {
-            return;
-        }
-        //根据车的位置和路径点的位置坐标计算出相对向量
-        UnityEngine.Vector3 relativeVector = transform.InverseTransformPoint(nodes[currentIndex].position);
-        //计算轮胎的实际转角
-        float newSteer = (relativeVector.x / relativeVector.magnitude) * maxSteerAngle;
-        this.targetSteerAngle = newSteer;
-        ////将实际转角运用到左前轮和右前轮的转角
-        //LF.steerAngle = targetSteerAngle;
-        //RF.steerAngle = targetSteerAngle;
-        //this.carHead.transform.Rotate(UnityEngine.Vector3.left * Time.deltaTime * targetSteerAngle);
-    }
-
-    private void Drive()
-    {
-        ////计算车速
-        //currentSpeed = 2 * Mathf.PI * LF.radius * LF.rpm * 60 / 1000;
-        ////如果车速小于最大速度，那么给予车轮动力
-        ////修改一下汽车行驶的条件
-        //if (currentSpeed < maxSpeed && !isBraking)
-        //{
-        //    LF.motorTorque = maxMotorTorque;
-        //    RF.motorTorque = maxMotorTorque;
-        //}
-        //else
-        //{
-        //    LF.motorTorque = 0;
-        //    RF.motorTorque = 0;
-        //}
-    }
     private void CheckNextWaypointDistance()
     {
-        //判断汽车当前的距离和路径点之间的距离
-        if (UnityEngine.Vector3.Distance(new UnityEngine.Vector3(this.transform.position.x, 0, this.transform.position.z),
-                           new UnityEngine.Vector3(nodes[currentIndex].position.x, 0, nodes[currentIndex].position.z)) < 0.5f)
+        //移动位置
+        transform.position = UnityEngine.Vector3.MoveTowards(transform.position, _targetPosition, speed * Time.deltaTime);
+
+        if (UnityEngine.Vector3.Distance(new UnityEngine.Vector3(this.transform.position.x, 1.5f, this.transform.position.z), _targetPosition)
+                            < 0.5f)
         {
             //如果已经到达了最后一个路径点，那么将索引值置0，绕圈
             if (currentIndex == nodes.Count - 1)
             {
                 //currentIndex = 0;
+                return;
             }
             else
             {
                 currentIndex++;
             }
+            _targetPosition = nodes[currentIndex];
+            // 计算新的朝向
+            float vangle = Utils.getAngleBetweenVectorAndXAxis(this.transform.position, _targetPosition);
+            //将车辆调整为靠右行驶
+            this.transform.position = adjustNextCoord(vangle, nodes[currentIndex - 1]);
+            _targetPosition = adjustNextCoord(vangle, _targetPosition);
+            //调整坐标后，重新计算朝向
+            vangle = Utils.getAngleBetweenVectorAndXAxis(this.transform.position, _targetPosition);
+            vangle = 360 - vangle + 180;
+            Vector3 eulerAngle = new Vector3(0, vangle, 0);//欧拉角
+            transform.rotation = Quaternion.Euler(eulerAngle);
         }
-        nav.SetDestination(this.nodes[currentIndex].position);
     }
 
-    private void Breaking()
+    /// <summary>
+    /// 将车辆调整为靠右行驶
+    /// </summary>
+    /// <param name="vangle"></param>
+    /// <param name="position"></param>
+    UnityEngine.Vector3 adjustNextCoord(float vangle, UnityEngine.Vector3 position)
     {
-        //if (isBraking)
-        //{
-        //    carRender.material.mainTexture = textureBreaking;
-        //    //后轮刹车
-        //    RB.brakeTorque = maxBrakeTorque;
-        //    LB.brakeTorque = maxBrakeTorque;
-        //}
-        //else
-        //{
-        //    carRender.material.mainTexture = textureNormal;
-        //    RB.brakeTorque = 0;
-        //    LB.brakeTorque = 0;
-        //}
+        float adjust = 2.5f;
+        if (vangle > 45 && vangle <= 135)
+        {
+            position.x += adjust;
+        }
+        else if (vangle > 135 && vangle <= 225)
+        {
+            position.z += adjust;
+        }
+        else if (vangle > 225 && vangle < 315)
+        {
+            position.x -= adjust;
+        }
+        else
+        {
+            position.z -= adjust;
+        }
+        return position;
     }
+
 
     // Update is called once per frame
     void Update()
     {
-        ////判断汽车当前的距离和路径点之间的距离
-        //if (UnityEngine.Vector3.Distance(new UnityEngine.Vector3(transform.position.x, 0, transform.position.z),
-        //                   new UnityEngine.Vector3(nodes[currentIndex].position.x, 0,
-        //                   nodes[currentIndex].position.z)) < 0.5f)
-        //{
-        //    //如果已经到达了最后一个路径点，那么将索引值置0，绕圈
-        //    if (currentIndex == nodes.Count - 1)
-        //    {
-        //        currentIndex = 0;
-        //    }
-        //    else
-        //    {
-        //        currentIndex++;
-        //    }
-        //}
-        //nav.SetDestination(this.nodes[currentIndex].position);
+
+        CheckNextWaypointDistance();
     }
 }
