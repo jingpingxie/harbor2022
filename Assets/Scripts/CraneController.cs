@@ -20,6 +20,7 @@ public class CraneController : MonoBehaviour
     GameObject container;
 
     GameObject truck;
+    CarDrive _currentCarDrive;
 
     void Start()
     {
@@ -39,11 +40,12 @@ public class CraneController : MonoBehaviour
         carDrive.ArrivedChanged += CarDrive_ArrivedChanged;
     }
 
-    private void CarDrive_ArrivedChanged(int param)
+    private void CarDrive_ArrivedChanged(CarDrive carDrive, int param)
     {
         if (this.moveState == CraneActionState.Unkown)
         {
             this.moveState = CraneActionState.MoveCrane;
+            _currentCarDrive = carDrive;
         }
     }
 
@@ -191,6 +193,9 @@ public class CraneController : MonoBehaviour
             System.Console.WriteLine("move back");
             moveState = CraneActionState.MoveBack;
             container.transform.SetParent(truckTransform);
+            if (null != _currentCarDrive) {
+                _currentCarDrive.SetContainerLoaded(container);
+            }
         }
     }
 

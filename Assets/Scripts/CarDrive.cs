@@ -13,34 +13,37 @@ using UnityEngine.EventSystems;
 //https://docs.unity3d.com/cn/current/Manual/class-WheelCollider.html
 
 // 定义一个带参数的事件委托类型
-public delegate void ArrivedEventHandler(int param);
+public delegate void ArrivedEventHandler(CarDrive carDrive, int param);
 public class CarDrive : MonoBehaviour
 {
     //定义带参数的事件
     public event ArrivedEventHandler ArrivedChanged;
 
     //获取路径
-    private List<UnityEngine.Vector3> nodes;
+    private List<UnityEngine.Vector3> _nodes;
     //路径点索引值
-    private int currentIndex = 0;
+    private int _currentIndex = 0;
 
 
-    public float speed = 10;
+    public float Speed = 10;
 
     //汽车稳定性的提升
     //private Rigidbody rb;
     public UnityEngine.Vector3 centerOfMass = new UnityEngine.Vector3(0, -1, 0);
 
-    RouteNet routeNet;
+    RouteNet _routeNet;
     UnityEngine.Vector3 _targetPosition;
+    GameObject _currentContainer;
+    const float CarHeight = 2.2f;
+    String _ignoreNodeId = null;
 
-    public String[] Plan(Coord startPosition, Coord endPosition)
+    public String[] Plan(Coord startPosition, Coord endPosition, string ignoreNodeID)
     {
-        routeNet = HarborApp.graph.RouteNet.Clone();
-        Node startNode = routeNet.InsertNearstNode("startNodeId", startPosition);
-        Node endNode = routeNet.InsertNearstNode("endNodeId", endPosition);
+        _routeNet = HarborApp.graph.RouteNet.Clone();
+        Node startNode = _routeNet.InsertNearstNode("startNodeId", startPosition);
+        Node endNode = _routeNet.InsertNearstNode("endNodeId", endPosition);
         RoutePlanner planner = new RoutePlanner();
-        RoutePlanResult routePlanResult = planner.Plan(routeNet.NodeList, startNode.ID, endNode.ID, null);
+        RoutePlanResult routePlanResult = planner.Plan(_routeNet.NodeList, startNode.ID, endNode.ID, ignoreNodeID);
         return routePlanResult.ResultNodes;
     }
 
@@ -52,15 +55,16 @@ public class CarDrive : MonoBehaviour
         //集装箱位置
         Transform containerPos = container.transform;
 
-        String[] resultNodes = this.Plan(new Coord(this.transform.position.x, this.transform.position.y, this.transform.position.z), new Coord(containerPos.position.x, containerPos.position.y, containerPos.position.z - 6.5f));
-        Debug.Log(resultNodes);
-        nodes = new List<UnityEngine.Vector3>();
+        String[] resultNodes = this.Plan(new Coord(this.transform.position.x, this.transform.position.y, this.transform.position.z),
+            new Coord(containerPos.position.x, containerPos.position.y, containerPos.position.z - 6.5f), null);
+        _nodes = new List<UnityEngine.Vector3>();
         for (int i = 0; i < resultNodes.Length; i++)
         {
-            Coord coord = routeNet.GetNodeById(resultNodes[i]).Coord;
-            nodes.Add(new UnityEngine.Vector3(coord.X, 2.2f, coord.Z));
+            Coord coord = _routeNet.GetNodeById(resultNodes[i]).Coord;
+            _nodes.Add(new UnityEngine.Vector3(coord.X, CarHeight, coord.Z));
         }
-        _targetPosition = nodes[0];
+        _ignoreNodeId = resultNodes[resultNodes.Length-2];
+        _targetPosition = _nodes[0];
     }
 
     /// <summary>
@@ -90,34 +94,49 @@ public class CarDrive : MonoBehaviour
         return position;
     }
 
+    public void SetContainerLoaded(GameObject container)
+    {
+        _currentContainer = container;
+        //计划装载集装箱到堆场的路径
+        _nodes.Clear();
+        String[] resultNodes = Plan(new Coord(_targetPosition.x, _targetPosition.y, _targetPosition.z), new Coord(330, CarHeight, 10), _ignoreNodeId);
+        for (int i = 0; i < resultNodes.Length; i++)
+        {
+            Coord coord = _routeNet.GetNodeById(resultNodes[i]).Coord;
+            _nodes.Add(new UnityEngine.Vector3(coord.X, CarHeight, coord.Z));
+        }
+        _targetPosition = _nodes[0];
+        _currentIndex = 0;
+    }
+
 
     // Update is called once per frame
     void Update()
     {
-        if (currentIndex < 0) { return; }
+        if (_currentIndex < 0) { return; }
         //移动位置
-        transform.position = UnityEngine.Vector3.MoveTowards(transform.position, _targetPosition, speed * Time.deltaTime);
+        transform.position = UnityEngine.Vector3.MoveTowards(transform.position, _targetPosition, Speed * Time.deltaTime);
 
-        if (UnityEngine.Vector3.Distance(new UnityEngine.Vector3(this.transform.position.x, 2.2f, this.transform.position.z), _targetPosition)
+        if (UnityEngine.Vector3.Distance(new UnityEngine.Vector3(this.transform.position.x, CarHeight, this.transform.position.z), _targetPosition)
                             < 0.5f)
         {
             //如果已经到达了最后一个路径点，那么将索引值置0，绕圈
-            if (currentIndex == nodes.Count - 1)
+            if (_currentIndex == _nodes.Count - 1)
             {
                 //触发事件
-                ArrivedChanged?.Invoke(0);
-                currentIndex = -1;
+                ArrivedChanged?.Invoke(this, 0);
+                _currentIndex = -1;
                 return;
             }
             else
             {
-                currentIndex++;
+                _currentIndex++;
             }
-            _targetPosition = nodes[currentIndex];
+            _targetPosition = _nodes[_currentIndex];
             // 计算新的朝向
             float vangle = Utils.getAngleBetweenVectorAndXAxis(this.transform.position, _targetPosition);
             //将车辆调整为靠右行驶
-            this.transform.position = adjustNextCoord(vangle, nodes[currentIndex - 1]);
+            this.transform.position = adjustNextCoord(vangle, _nodes[_currentIndex - 1]);
             _targetPosition = adjustNextCoord(vangle, _targetPosition);
             //调整坐标后，重新计算朝向
             vangle = Utils.getAngleBetweenVectorAndXAxis(this.transform.position, _targetPosition);
