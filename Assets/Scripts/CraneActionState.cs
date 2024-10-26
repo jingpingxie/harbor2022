@@ -8,6 +8,7 @@ namespace Assets
 {
     internal enum CraneActionState
     {
+        Unkown,
         MoveCrane,
         MoveSlide,
         HookDown,

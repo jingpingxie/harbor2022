@@ -11,7 +11,7 @@ public class CraneController : MonoBehaviour
     private GameObject chain;
     private GameObject hook;
 
-    private CraneActionState moveState = CraneActionState.MoveCrane;
+    private CraneActionState moveState = CraneActionState.Unkown;
     float chainOriginLength;
     const float CONTAINER_HEIGHT = 4.5f;
 
@@ -32,6 +32,19 @@ public class CraneController : MonoBehaviour
         truckTransform = truck.transform;
 
         System.Console.WriteLine("start");
+
+
+        CarDrive carDrive = FindObjectOfType<CarDrive>();
+        // 订阅事件，并指定事件处理方法
+        carDrive.ArrivedChanged += CarDrive_ArrivedChanged;
+    }
+
+    private void CarDrive_ArrivedChanged(int param)
+    {
+        if (this.moveState == CraneActionState.Unkown)
+        {
+            this.moveState = CraneActionState.MoveCrane;
+        }
     }
 
     void Update()
