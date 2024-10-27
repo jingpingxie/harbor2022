@@ -1,29 +1,23 @@
 using Assets.Scripts;
 using Assets.Scripts.Dijkstra;
-using RoadArchitect;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using UnityEngine.UIElements;
-using UnityEngine.AI;
-using TMPro;
-using UnityEngine.EventSystems;
 
 //https://blog.csdn.net/qq_68117303/article/details/133011345
 //https://docs.unity3d.com/cn/current/Manual/class-WheelCollider.html
 
 // 定义一个带参数的事件委托类型
-public delegate void ArrivedEventHandler(CarDrive carDrive, int param);
+public delegate void LoadContainerFromShipToTruckEventHandler(CarDrive carDrive, GameObject truck, GameObject loadedContainer, int param);
 public class CarDrive : MonoBehaviour
 {
     //定义带参数的事件
-    public event ArrivedEventHandler ArrivedChanged;
+    public event LoadContainerFromShipToTruckEventHandler LoadContainerFromShipToTruckNotify;
 
     //获取路径
     private List<UnityEngine.Vector3> _nodes;
     //路径点索引值
     private int _currentIndex = 0;
-
 
     public float Speed = 10;
 
@@ -51,9 +45,9 @@ public class CarDrive : MonoBehaviour
     void Start()
     {
         //获取要装卸的集装箱
-        GameObject container = GameObject.Find("Port-Container_SHIP1/Port-container_38");
+        _currentContainer = GameObject.Find("Port-Container_SHIP1/Port-container_38");
         //集装箱位置
-        Transform containerPos = container.transform;
+        Transform containerPos = _currentContainer.transform;
 
         String[] resultNodes = this.Plan(new Coord(this.transform.position.x, this.transform.position.y, this.transform.position.z),
             new Coord(containerPos.position.x, containerPos.position.y, containerPos.position.z - 6.5f), null);
@@ -63,7 +57,7 @@ public class CarDrive : MonoBehaviour
             Coord coord = _routeNet.GetNodeById(resultNodes[i]).Coord;
             _nodes.Add(new UnityEngine.Vector3(coord.X, CarHeight, coord.Z));
         }
-        _ignoreNodeId = resultNodes[resultNodes.Length-2];
+        _ignoreNodeId = resultNodes[resultNodes.Length - 2];
         _targetPosition = _nodes[0];
     }
 
@@ -94,7 +88,7 @@ public class CarDrive : MonoBehaviour
         return position;
     }
 
-    public void SetContainerLoaded(GameObject container)
+    public void SetContainerLoadEnd(GameObject container)
     {
         _currentContainer = container;
         //计划装载集装箱到堆场的路径
@@ -123,8 +117,8 @@ public class CarDrive : MonoBehaviour
             //如果已经到达了最后一个路径点，那么将索引值置0，绕圈
             if (_currentIndex == _nodes.Count - 1)
             {
-                //触发事件
-                ArrivedChanged?.Invoke(this, 0);
+                //触发将集装箱从船上装载到集卡上的事件
+                LoadContainerFromShipToTruckNotify?.Invoke(this, this.gameObject, this._currentContainer, 0);
                 _currentIndex = -1;
                 return;
             }

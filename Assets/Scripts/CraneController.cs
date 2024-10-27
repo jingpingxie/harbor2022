@@ -16,9 +16,7 @@ public class CraneController : MonoBehaviour
     const float CONTAINER_HEIGHT = 4.5f;
 
     private Transform _truckTransform;
-
-    GameObject _container;
-
+    GameObject _loadedContainer;
     GameObject _truck;
     CarDrive _currentCarDrive;
 
@@ -27,25 +25,24 @@ public class CraneController : MonoBehaviour
         _elevator = GameObject.Find("Elevator1");
         _chain = GameObject.Find("Chain1");
         _hook = GameObject.Find("Hook1");
-        _container = GameObject.Find("Port-Container_SHIP1/Port-container_38");
-        _containerOriginTransform = _container.transform;
-        _truck = GameObject.Find("HG0701");
-        _truckTransform = _truck.transform;
-
         System.Console.WriteLine("start");
 
 
         CarDrive carDrive = FindObjectOfType<CarDrive>();
         // 订阅事件，并指定事件处理方法
-        carDrive.ArrivedChanged += CarDrive_ArrivedChanged;
+        carDrive.LoadContainerFromShipToTruckNotify += LoadContainerFromShipToTruckNotified;
     }
 
-    private void CarDrive_ArrivedChanged(CarDrive carDrive, int param)
+    private void LoadContainerFromShipToTruckNotified(CarDrive carDrive, GameObject truck, GameObject loadedContainer, int param)
     {
         if (this.moveState == CraneActionState.Unkown)
         {
             this.moveState = CraneActionState.MoveCrane;
             _currentCarDrive = carDrive;
+            _loadedContainer = loadedContainer;
+            _containerOriginTransform = _loadedContainer.transform;
+            _truck = truck;
+            _truckTransform = _truck.transform;
         }
     }
 
@@ -192,9 +189,10 @@ public class CraneController : MonoBehaviour
         {
             System.Console.WriteLine("move back");
             moveState = CraneActionState.MoveBack;
-            _container.transform.SetParent(_truckTransform);
+            _loadedContainer.transform.SetParent(_truckTransform);
             if (null != _currentCarDrive) {
-                _currentCarDrive.SetContainerLoaded(_container);
+                //集装箱已经装载到了集卡上
+                _currentCarDrive.SetContainerLoadEnd(_loadedContainer);
             }
         }
     }
