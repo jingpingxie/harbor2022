@@ -18,7 +18,7 @@ public class CraneController : MonoBehaviour
     private Transform _truckTransform;
     GameObject _loadedContainer;
     GameObject _truck;
-    CarDrive _currentCarDrive;
+    TruckDrive _currentCarDrive;
 
     void Start()
     {
@@ -28,12 +28,12 @@ public class CraneController : MonoBehaviour
         System.Console.WriteLine("start");
 
 
-        CarDrive carDrive = FindObjectOfType<CarDrive>();
+        TruckDrive carDrive = FindObjectOfType<TruckDrive>();
         // 订阅事件，并指定事件处理方法
         carDrive.LoadContainerFromShipToTruckNotify += LoadContainerFromShipToTruckNotified;
     }
 
-    private void LoadContainerFromShipToTruckNotified(CarDrive carDrive, GameObject truck, GameObject loadedContainer, int param)
+    private void LoadContainerFromShipToTruckNotified(TruckDrive carDrive, GameObject truck, GameObject loadedContainer, int param)
     {
         if (this.moveState == CraneActionState.Unkown)
         {

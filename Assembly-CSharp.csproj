@@ -65,11 +65,12 @@
     <Compile Include="Assets\Scripts\Dijkstra\Node.cs" />
     <Compile Include="Assets\Scripts\Dijkstra\RouteNet.cs" />
     <Compile Include="Assets\Scripts\Dijkstra\PassedPath.cs" />
+    <Compile Include="Assets\Scripts\TruckDrive.cs" />
     <Compile Include="Assets\Scripts\Dijkstra\RouteParser.cs" />
     <Compile Include="Assets\Scripts\Dijkstra\RoutePlanner.cs" />
     <Compile Include="Assets\Scripts\HarborApp.cs" />
-    <Compile Include="Assets\Scripts\CarDrive.cs" />
     <Compile Include="Assets\Scripts\CraneActionState.cs" />
+    <Compile Include="Assets\Scripts\TruckActionState.cs" />
     <Compile Include="Assets\Scripts\PortTruckController.cs" />
     <Compile Include="Assets\Scripts\TestMysql.cs" />
     <Compile Include="Assets\Scripts\Container\ContainerType.cs" />
