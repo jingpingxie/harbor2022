@@ -24,9 +24,9 @@ public class CraneController : MonoBehaviour
 
     void Start()
     {
-        _elevator = GameObject.Find("Elevator");
-        _chain = GameObject.Find("Chain");
-        _hook = GameObject.Find("Hook");
+        _elevator = GameObject.Find("Elevator1");
+        _chain = GameObject.Find("Chain1");
+        _hook = GameObject.Find("Hook1");
         _container = GameObject.Find("Port-Container_SHIP1/Port-container_38");
         _containerOriginTransform = _container.transform;
         _truck = GameObject.Find("HG0701");
