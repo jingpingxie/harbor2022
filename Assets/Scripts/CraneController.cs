@@ -6,18 +6,20 @@ public class CraneController : MonoBehaviour
 {
 
     public float MoveSpeed = 5f; //移动速度
-    private Transform _containerOriginTransform; //集装箱原始位置
+
     private GameObject _elevator;
     private GameObject _chain;
     private GameObject _hook;
 
     private CraneActionState moveState = CraneActionState.Unkown;
-    float _chainOriginLength;
-    const float CONTAINER_HEIGHT = 4.5f;
 
-    private Transform _truckTransform;
+    const float CONTAINER_HEIGHT = 4.5f;
     GameObject _loadedContainer;
+    private Transform _containerOriginTransform; //集装箱原始位置
+    float _chainOriginLength;
+
     GameObject _truck;
+    private Transform _truckTransform;
     TruckDrive _currentCarDrive;
 
     void Start()
@@ -124,7 +126,9 @@ public class CraneController : MonoBehaviour
             moveState = CraneActionState.LiftUp;
         }
     }
-
+    /// <summary>
+    /// 将将集装箱抬起来
+    /// </summary>
     private void LiftUp()
     {
         float moveDistance = MoveSpeed * Time.deltaTime / 2;
@@ -139,7 +143,13 @@ public class CraneController : MonoBehaviour
 
         Transform containerTransform = _containerOriginTransform;
         containerTransform.position = new Vector3(containerTransform.position.x, containerTransform.position.y + moveDistance, containerTransform.position.z);
-
+        Rigidbody rigidbodyContainer = _loadedContainer.GetComponent<Rigidbody>();
+        if (rigidbodyContainer != null)
+        {
+            //重置重力影响，使得刚体不受重力影响
+            rigidbodyContainer.velocity = Vector3.zero;
+            rigidbodyContainer.angularVelocity = Vector3.zero;
+        }
 
         //float distance = hookTransform.position.y - (target.position.y + CONTAINER_HEIGHT);
         if (scale <= 1.0f)
@@ -149,6 +159,9 @@ public class CraneController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 将集装箱从船上移动到集卡上方
+    /// </summary>
     private void LiftMove()
     {
         Transform elevatorTransform = _elevator.transform;
@@ -159,6 +172,13 @@ public class CraneController : MonoBehaviour
 
         Transform containerTransform = _containerOriginTransform;
         containerTransform.position = new Vector3(elevatorTransform.position.x, containerTransform.position.y, containerTransform.position.z);
+        Rigidbody rigidbodyContainer = _loadedContainer.GetComponent<Rigidbody>();
+        if (rigidbodyContainer != null)
+        {
+            //重置重力影响，使得刚体不受重力影响
+            rigidbodyContainer.velocity = Vector3.zero;
+            rigidbodyContainer.angularVelocity = Vector3.zero;
+        }
 
         if (Mathf.Abs(elevatorTransform.position.x - _truckTransform.position.x) < 0.1f)
         {
@@ -169,6 +189,9 @@ public class CraneController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 将集装箱往下放置到集卡上
+    /// </summary>
     private void LiftDown()
     {
         float moveDistance = MoveSpeed * Time.deltaTime / 2;
@@ -183,6 +206,13 @@ public class CraneController : MonoBehaviour
 
         Transform containerTransform = _containerOriginTransform;
         containerTransform.position = new Vector3(containerTransform.position.x, containerTransform.position.y - moveDistance, containerTransform.position.z);
+        Rigidbody rigidbodyContainer = _loadedContainer.GetComponent<Rigidbody>();
+        if (rigidbodyContainer != null)
+        {
+            //重置重力影响，使得刚体不受重力影响
+            rigidbodyContainer.velocity = Vector3.zero;
+            rigidbodyContainer.angularVelocity = Vector3.zero;
+        }
 
         float distance = _containerOriginTransform.position.y - _truckTransform.position.y - 1.4f;
         if (distance <= 0.0f)
@@ -190,7 +220,8 @@ public class CraneController : MonoBehaviour
             System.Console.WriteLine("move back");
             moveState = CraneActionState.MoveBack;
             _loadedContainer.transform.SetParent(_truckTransform);
-            if (null != _currentCarDrive) {
+            if (null != _currentCarDrive)
+            {
                 //集装箱已经装载到了集卡上
                 _currentCarDrive.SetContainerLoadEnd(_loadedContainer);
             }
