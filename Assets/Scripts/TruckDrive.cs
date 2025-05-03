@@ -49,7 +49,7 @@ public class TruckDrive : MonoBehaviour
     void Start()
     {
         //获取要装卸的集装箱
-        _currentContainer = GameObject.Find("Port-Container_SHIP1/Port-container_38");
+        _currentContainer = GameObject.Find("Port-Container_SHIP1/Port-Container_SHIP1_001001005");
         //集装箱位置
         Transform containerPos = _currentContainer.transform;
 
