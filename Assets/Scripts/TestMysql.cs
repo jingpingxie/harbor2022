@@ -20,8 +20,8 @@ namespace Assets.Scripts
 
         void Start()
         {
-            ConnectMysql();
-            SearchMysql();
+            //ConnectMysql();
+            //SearchMysql();
             //UpadteMysql();
         }
 

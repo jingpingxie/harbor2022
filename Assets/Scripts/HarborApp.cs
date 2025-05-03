@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Dijkstra;
+﻿using Assets.Scripts.Db;
+using Assets.Scripts.Dijkstra;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,8 @@ namespace Assets.Scripts
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         static void Main()
         {
+            //数据库初始化
+            DbManager.Initialize();
             graph.Init();
         }
 

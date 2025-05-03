@@ -15,6 +15,7 @@ namespace Assets.Scripts
         float _x;
         float _y;
         float _z;
+        public string Name { get { return _name; } }
         public float X { get { return _x; } }
         public float Y { get { return _y; } }
         public float Z { get { return _z; } }

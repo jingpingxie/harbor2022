@@ -70,12 +70,14 @@
     <Compile Include="Assets\Scripts\ShipController.cs" />
     <Compile Include="Assets\Scripts\Ship\ShipPlan.cs" />
     <Compile Include="Assets\Scripts\Dijkstra\Edge.cs" />
+    <Compile Include="Assets\Scripts\Db\DbConnection.cs" />
     <Compile Include="Assets\Scripts\Dijkstra\RouteNet.cs" />
     <Compile Include="Assets\Scripts\Dijkstra\PassedPath.cs" />
     <Compile Include="Assets\Scripts\Dijkstra\RouteParser.cs" />
     <Compile Include="Assets\Scripts\Dijkstra\RoutePlanner.cs" />
     <Compile Include="Assets\Scripts\HarborApp.cs" />
     <Compile Include="Assets\Scripts\CraneActionState.cs" />
+    <Compile Include="Assets\Scripts\Db\DbManager.cs" />
     <Compile Include="Assets\Scripts\CraneController.cs" />
     <Compile Include="Assets\Scripts\Dijkstra\RoutePlanResult.cs" />
     <Compile Include="Assets\Scripts\GameObjectUtils.cs" />

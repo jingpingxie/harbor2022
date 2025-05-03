@@ -23,10 +23,17 @@ public class ShipController : MonoBehaviour
     }
     void LoadContainer()
     {
-        List<Container> containerList = shipPlan.Plan(this.name, BaySum, RowSum, ColumnSum, ColumnSumInFirstBay, ColumnSumInLastBay);
+        //从数据库获取集装箱列表
+        List<Container> containerList = shipPlan.GetPlanFromDb(this.name);
+        if (containerList.Count == 0)
+        {
+            //如果无法获取，则动态生成集装箱列表
+            containerList = shipPlan.Plan(this.name, BaySum, RowSum, ColumnSum, ColumnSumInFirstBay, ColumnSumInLastBay);
+        }
         foreach (Container container in containerList)
         {
             GameObject containerGameObject = Object.Instantiate(_containerFactory.GetAssetContainer(container.ContainerType)) as GameObject;
+            containerGameObject.name = container.Name;
             containerGameObject.transform.SetParent(this.transform, true);
             containerGameObject.transform.localPosition = new Vector3(container.X, container.Y, container.Z);
         }
